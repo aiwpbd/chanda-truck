@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>সবজির ট্রাক — ক্ষেত থেকে কাওরান বাজার | Vegetable Truck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/bargain.css" />
+</head>
+<body>
+<div id="wrap">
+
+  <!-- THREE.JS CANVAS -->
+  <canvas id="c"></canvas>
+
+  <!-- SPEEDOMETER (separate canvas, bottom-center) -->
+  <canvas id="speedo" width="160" height="160"></canvas>
+
+  <!-- DAMAGE FLASH OVERLAY -->
+  <div id="dmg-flash"></div>
+
+  <!-- HONK POP -->
+  <div id="honk-pop">📯 পোঁ পোঁ!</div>
+
+  <!-- ===== MENU SCREEN ===== -->
+  <div id="s-menu" class="screen active">
+    <div class="card">
+      <span class="truck-emoji">🚛</span>
+      <h1 class="bn">সবজির ট্রাক</h1>
+      <h2 class="en">Vegetable Truck</h2>
+      <div class="route bn">ক্ষেত থেকে কাওরান বাজার</div>
+      <div class="route en">From Farm to Kawran Bazar</div>
+      <button id="btn-play" class="btn primary">
+        খেলুন
+        <small class="en sm">Play Now</small>
+      </button>
+      <button id="btn-howto" class="btn secondary">
+        কীভাবে খেলবেন
+        <small class="en sm">How to Play</small>
+      </button>
+      <div class="tagline">🇧🇩 Made for Bangladesh | বাংলাদেশের জন্য তৈরি</div>
+    </div>
+  </div>
+
+  <!-- ===== HOW TO PLAY SCREEN ===== -->
+  <div id="s-howto" class="screen">
+    <div class="card wide">
+      <h2 class="bn">কীভাবে খেলবেন</h2>
+      <h3 class="en">How to Play</h3>
+      <div class="how-grid">
+        <div class="how-item">
+          <span class="key-badge">↑ / W</span>
+          <span class="bn">গ্যাস</span>
+          <span class="en">Gas / Accelerate</span>
+        </div>
+        <div class="how-item">
+          <span class="key-badge">↓ / S</span>
+          <span class="bn">ব্রেক</span>
+          <span class="en">Brake / Reverse</span>
+        </div>
+        <div class="how-item">
+          <span class="key-badge">SPACE</span>
+          <span class="bn">হর্ন</span>
+          <span class="en">Honk</span>
+        </div>
+        <div class="how-item">
+          <span class="key-badge">→ / D</span>
+          <span class="bn">গ্যাস (বিকল্প)</span>
+          <span class="en">Gas (alt)</span>
+        </div>
+        <div class="how-item">
+          <span class="key-badge">← / A</span>
+          <span class="bn">ব্রেক (বিকল্প)</span>
+          <span class="en">Brake (alt)</span>
+        </div>
+      </div>
+      <div class="story">
+        <p><span class="bn">১. ক্ষেত থেকে সবজি কিনুন।</span><br/><span class="en">1. Buy vegetables from the farm market.</span></p>
+        <p><span class="bn">২. ট্রাকে সবজি লোড করুন।</span><br/><span class="en">2. Load the truck with your vegetables.</span></p>
+        <p><span class="bn">৩. চেকপয়েন্ট, রেলগেট ও টোল পার করুন।</span><br/><span class="en">3. Navigate checkpoints, railway crossings &amp; toll booths.</span></p>
+        <p><span class="bn">৪. পুলিশ থেকে সাবধান — ঘুষ দিতে হতে পারে!</span><br/><span class="en">4. Beware of police — you may need to negotiate!</span></p>
+        <p><span class="bn">৫. কাওরান বাজারে পৌঁছে সবজি বিক্রি করুন।</span><br/><span class="en">5. Reach Kawran Bazar and sell your vegetables!</span></p>
+      </div>
+      <button id="btn-howto-ok" class="btn primary">বুঝলাম, খেলুন! <small class="en sm">Got it, Play!</small></button>
+      <button id="btn-howto-back" class="btn ghost">← ফিরে যান | Back</button>
+    </div>
+  </div>
+
+  <!-- ===== BARGAIN / SHOP SCREEN ===== -->
+  <div id="s-shop" class="screen">
+    <div class="card shop-card bargain-card">
+      <div id="mkt-banner" class="mkt-banner" style="display:none"></div>
+
+      <!-- Market header -->
+      <div class="shop-header">
+        <div class="vendor-emoji">&#x1F9D1;&#x200D;&#x1F33E;</div>
+        <h2 class="bn">&#x995;&#x9CD;&#x9B7;&#x9C7;&#x9A4;&#x9C7;&#x9B0; &#x9B9;&#x9BE;&#x99F;</h2>
+        <h3 class="en">Field Market &mdash; Bargain for Vegetables</h3>
+      </div>
+
+      <!-- Round indicator -->
+      <div class="bg-round-bar">
+        <span id="bg-round" class="bg-round-label">&#x9A6;&#x9B0; &#x9A6;&#x9B0; &#x967;/&#x968;</span>
+        <span class="bg-balance">&#x9F3;<span id="bg-balance">10000</span> &#x9B9;&#x9BE;&#x9A4;&#x9C7;</span>
+      </div>
+
+      <!-- Vendor speech bubble -->
+      <div class="vendor-bubble">
+        <div class="bubble-arrow"></div>
+        <p id="bg-dialog" class="bn vendor-text">&#x9AD;&#x9BE;&#x987;, &#x986;&#x99C;&#x9C7;&#x9B0; &#x9A6;&#x9BE;&#x9AE; &#x9EC; &#x99F;&#x9BE;&#x995;&#x9BE; &#x995;&#x9C7;&#x99C;&#x9BF;!</p>
+      </div>
+
+      <!-- Price per kg (big) -->
+      <div class="bg-price-display">
+        <span class="bn">&#x9AC;&#x9B0;&#x9CD;&#x9A4;&#x9AE;&#x9BE;&#x9A8; &#x9A6;&#x9BE;&#x9AE;</span>
+        <span class="bg-price-big">&#x9F3;<span id="bg-price">16</span><small>/&#x995;&#x9C7;&#x99C;&#x9BF;</small></span>
+      </div>
+
+      <!-- Quantity selector -->
+      <div class="qty-row">
+        <button class="qty-btn" id="bg-minus">&#x2212;</button>
+        <div class="qty-display">
+          <span id="bg-qty">500</span>
+          <span class="unit bn"> &#x995;&#x9C7;&#x99C;&#x9BF;</span>
+        </div>
+        <button class="qty-btn" id="bg-plus">&#x2B;</button>
+      </div>
+
+      <!-- Cost breakdown -->
+      <div class="shop-costs">
+        <div class="cost-row">
+          <span>
+            <span class="bn">&#x995;&#x9C7;&#x99C;&#x9BF; &#x995;&#x9C7;&#x9A8;&#x9BE;&#x9B0; &#x996;&#x9B0;&#x99A;</span>
+            <span class="en">Vegetable purchase cost</span>
+          </span>
+          <strong>&#x9F3;<span id="bg-cost">8000</span></strong>
+        </div>
+        <div class="cost-row">
+          <span>
+            <span class="bn">&#x995;&#x9BE;&#x993;&#x9B0;&#x9BE;&#x9A8; &#x9AC;&#x9BE;&#x99C;&#x9BE;&#x9B0;&#x9C7; &#x9AC;&#x9BF;&#x995;&#x9CD;&#x9B0;&#x9BF;</span>
+            <span class="en">Expected sell at Kawran Bazar</span>
+          </span>
+          <strong>&#x9F3;<span id="bg-sell">8500</span></strong>
+        </div>
+        <div class="cost-row">
+          <span>
+            <span class="bn">&#x9B8;&#x9AE;&#x9CD;&#x9AD;&#x9BE;&#x9AC;&#x9CD;&#x9AF; &#x9B2;&#x9BE;&#x9AD;</span>
+            <span class="en">Estimated profit</span>
+          </span>
+          <strong>&#x9F3;<span id="bg-profit">500</span></strong>
+        </div>
+      </div>
+
+      <!-- Haggle button (reduces price) -->
+      <button id="bg-haggle" class="btn haggle-btn">
+        &#x9A6;&#x9B0; &#x995;&#x9AE;&#x9BE;&#x9A8&#x9CB; | Haggle
+      </button>
+
+      <!-- Accept & buy button -->
+      <button id="bg-accept" class="btn primary">
+        &#x9B0;&#x9BE;&#x99C;&#x9BF;! &#x995;&#x9BF;&#x9A8;&#x9BF; &#x993; &#x99F;&#x9CD;&#x9B0;&#x9BE;&#x995; &#x9AD;&#x9B0;&#x9CB;
+        <small class="en sm">Accept &amp; Load Truck</small>
+      </button>
+
+      <button id="btn-shop-back" class="btn ghost">&#x9AA;&#x9BF;&#x99B;&#x9C1; &#x9AB;&#x9BF;&#x9B0;&#x9BE;&#x993; | Back</button>
+    </div>
+  </div>
+
+  <!-- ===== OBSTACLE SCREEN ===== -->
+  <div id="s-obstacle" class="screen">
+    <div class="obstacle-card" id="obs-card">
+      <div class="obs-icon" id="obs-icon">⛔</div>
+      <h2 class="bn" id="obs-title-bn"></h2>
+      <p class="en" id="obs-title-en"></p>
+      <div class="obs-body" id="obs-body"></div>
+      <div class="obs-btns" id="obs-btns"></div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT SCREEN ===== -->
+  <div id="s-result" class="screen">
+    <div class="card result-card">
+      <div class="res-emoji" id="res-emoji">🎉</div>
+      <h2 class="bn" id="res-title-bn"></h2>
+      <p class="en" id="res-title-en"></p>
+      <div class="ledger" id="res-ledger"></div>
+      <div class="res-comment" id="res-comment"></div>
+      <button class="btn primary" id="btn-restart">আবার খেলুন | Play Again</button>
+    </div>
+  </div>
+
+  <!-- ===== 3D HUD ===== -->
+  <div id="hud" class="hidden">
+
+    <!-- Top-Left: Stats Panel -->
+    <div id="hud-stats">
+      <div class="srow">
+        <span class="slbl">💰 নগদ</span>
+        <span class="sval" id="h-money">৳০</span>
+      </div>
+      <div class="srow">
+        <span class="slbl">📦 মাল</span>
+        <span class="sval" id="h-cargo">০ কেজি</span>
+      </div>
+      <div class="srow">
+        <span class="slbl">⛽ জ্বালানি</span>
+        <div class="fuel-mini-wrap">
+          <div class="fuel-mini-fill" id="h-fuel-mini" style="width:100%"></div>
+        </div>
+      </div>
+      <div class="srow">
+        <span class="slbl">🚛 গতি</span>
+        <span class="sval" id="h-spd-txt">০ km/h</span>
+      </div>
+    </div>
+
+    <!-- Top-Center: Phase + Route Bar -->
+    <div id="hud-center">
+      <div id="h-phase-bar">
+        <span id="h-phase-icon">🌾</span>
+        <span id="h-phase-name" class="bn">ক্ষেতের ফার্ম — সবজি কিনুন</span>
+      </div>
+      <div id="h-instr" class="bn">→ চাপুন বা ডান বোতাম দিয়ে এগিয়ে যান</div>
+      <div id="h-route-bar">
+        <div class="route-inner" id="h-route-inner"></div>
+        <div class="route-truck" id="h-route-truck">🚛</div>
+      </div>
+    </div>
+
+    <!-- Top-Right: Controls -->
+    <div id="hud-controls">
+      <div id="h-weather-txt">☀️</div>
+      <button class="ctrl-circ" id="h-mute" title="Mute / Unmute">🔊</button>
+      <button class="ctrl-circ" id="h-pause" title="Pause">⏸</button>
+    </div>
+
+  </div><!-- /#hud -->
+
+  <!-- MOBILE CONTROLS -->
+  <div id="mob-ctrl" class="hidden">
+    <button class="mob-btn" id="mb-left">◀ ব্রেক</button>
+    <button class="mob-btn" id="mb-right">▶ গ্যাস</button>
+  </div>
+
+</div><!-- /#wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/game3d.js"></script>
+</body>
+</html>
